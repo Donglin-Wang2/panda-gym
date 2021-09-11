@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from gym import utils
 
@@ -16,6 +18,7 @@ class PickAndPlace(Task):
         obj_xy_range=0.3,
     ):
         self.sim = sim
+        print(type(self.sim))
         self.reward_type = reward_type
         self.distance_threshold = distance_threshold
         self.object_size = 0.04
@@ -110,3 +113,15 @@ class PickAndPlace(Task):
             return -(d > self.distance_threshold).astype(np.float32)
         else:
             return -d
+
+class PickAndPlaceCluttered(PickAndPlace):
+
+    def __init__(self, sim, reward_type, distance_threshold, goal_xy_range, goal_z_range, obj_xy_range, num_objs):
+        self.num_objs = num_objs
+        self.urdf_root_path = self.sim
+        super().__init__(sim, reward_type=reward_type, distance_threshold=distance_threshold, goal_xy_range=goal_xy_range, goal_z_range=goal_z_range, obj_xy_range=obj_xy_range)
+
+    def _create_scene(self):
+        self.sim.create_plane(z_offset=-0.4)
+        self.sim.create_table(length=1.1, width=0.7, height=0.4, x_offset=-0.3)
+        self.sim.loadURDF('rand_obj1', fileName=os.path.join(self.urdf_root_path, "random_urdfs/000/000.urdf"), basePosition=(0,0,1))

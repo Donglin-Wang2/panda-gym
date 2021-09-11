@@ -1,7 +1,7 @@
 from panda_gym.envs.core import RobotTaskEnv
 from panda_gym.pybullet import PyBullet
 from panda_gym.envs.robots import Panda
-from panda_gym.envs.tasks import PickAndPlace
+from panda_gym.envs.tasks import PickAndPlace, PickAndPlaceCluttered
 
 
 class PandaPickAndPlaceEnv(RobotTaskEnv):
@@ -22,3 +22,8 @@ class PandaPickAndPlaceEnv(RobotTaskEnv):
         )
         self.task = PickAndPlace(self.sim, reward_type=reward_type)
         RobotTaskEnv.__init__(self)
+
+class PandaPickAndPlaceClutteredEnv(PandaPickAndPlaceEnv):
+    def __init__(self, render, reward_type):
+        super().__init__(render=render, reward_type=reward_type)
+        self.task = PickAndPlaceCluttered(self.sim, reward_type=reward_type)
